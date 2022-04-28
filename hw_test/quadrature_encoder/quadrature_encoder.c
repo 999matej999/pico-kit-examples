@@ -37,7 +37,7 @@ int main() {
 
     // Base pin to connect the A phase of the encoder.
     // The B phase must be connected to the next pin
-    const uint PIN_AB = 10;
+    const uint PIN_AB = 21;
 
     stdio_init_all();
 
