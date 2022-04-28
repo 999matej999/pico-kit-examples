@@ -36,14 +36,7 @@ int main() {
     gpio_set_dir(LED3, GPIO_OUT);
     gpio_set_dir(LED4, GPIO_OUT);
 
-    uint8_t counter = 0;
-
     while (1) {
-        gpio_put(LED1, counter & 0b0001);
-        gpio_put(LED2, counter & 0b0010);
-        gpio_put(LED3, counter & 0b0100);
-        gpio_put(LED4, counter & 0b1000);
-
         // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
         const float conversion_factor = 3.3f / (1 << 12);
         uint16_t result = adc_read();
@@ -58,6 +51,11 @@ int main() {
         for(size_t i = 0; i < 4; ++i) printf((buttons & (1 << (4 - i - 1))) ? "1" : "0");
         printf("\n");*/
 
+        gpio_put(LED1, buttons & 0b1000);
+        gpio_put(LED2, buttons & 0b0100);
+        gpio_put(LED3, buttons & 0b0010);
+        gpio_put(LED4, buttons & 0b0001);
+
         printf("\nbuttons: |");
         for(size_t i = 0; i < 4; ++i) 
         {
@@ -65,7 +63,6 @@ int main() {
             else printf("    |");
         }
 
-        ++counter;
         sleep_ms(100);
     }
 }
