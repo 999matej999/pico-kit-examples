@@ -1,54 +1,40 @@
-/**
- * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
-// Fade an LED between low and high brightness. An interrupt handler updates
-// the PWM slice's output level each time the counter wraps.
-
 #include "pico/stdlib.h"
 #include <stdio.h>
 #include "pico/time.h"
 #include "hardware/irq.h"
 #include "hardware/pwm.h"
+#include "hardware/adc.h"
 
-#define LED_PIN 6
+#define LED1 6
 
-#ifdef LED_PIN
+#define POTENTIOMETER 27        // input gpio for potentiometer
+#define POTENTIOMETER_ADC_CH 1  // input channel of adc
+
+#ifdef LED1
 void on_pwm_wrap() {
-    static int fade = 0;
-    static bool going_up = true;
     // Clear the interrupt flag that brought us here
-    pwm_clear_irq(pwm_gpio_to_slice_num(LED_PIN));
+    pwm_clear_irq(pwm_gpio_to_slice_num(LED1));
 
-    if (going_up) {
-        ++fade;
-        if (fade > 255) {
-            fade = 255;
-            going_up = false;
-        }
-    } else {
-        --fade;
-        if (fade < 0) {
-            fade = 0;
-            going_up = true;
-        }
-    }
+    uint8_t adc_value = adc_read() >> 4;   // read adc value
+
     // Square the fade value to make the LED's brightness appear more linear
     // Note this range matches with the wrap value
-    pwm_set_gpio_level(LED_PIN, fade * fade);
+    pwm_set_gpio_level(LED1, adc_value * adc_value);
 }
 #endif
 
 int main() {
-#ifndef LED_PIN
-#warning pwm/led_fade example requires a board with a regular LED
-#else
+    // adc initialization
+    adc_init();
+    // make sure GPIO is high-impedance, no pullups etc
+    adc_gpio_init(POTENTIOMETER);
+    // select ADC input
+    adc_select_input(POTENTIOMETER_ADC_CH);
+
     // Tell the LED pin that the PWM is in charge of its value.
-    gpio_set_function(LED_PIN, GPIO_FUNC_PWM);
+    gpio_set_function(LED1, GPIO_FUNC_PWM);
     // Figure out which slice we just connected to the LED pin
-    uint slice_num = pwm_gpio_to_slice_num(LED_PIN);
+    uint slice_num = pwm_gpio_to_slice_num(LED1);
 
     // Mask our slice's IRQ output into the PWM block's single interrupt line,
     // and register our interrupt handler
@@ -69,5 +55,4 @@ int main() {
     // can twiddle our thumbs
     while (1)
         tight_loop_contents();
-#endif
 }
