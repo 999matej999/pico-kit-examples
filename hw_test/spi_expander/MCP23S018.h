@@ -7,7 +7,7 @@
 class MCP23S018
 {
 
-public:
+private:
     enum class REG : uint8_t
     {
         IODIR       = 0x00,
@@ -23,7 +23,6 @@ public:
         OLAT        = 0x0A
     };
 
-private:
     SPI &spi;
 
 public:
