@@ -4,9 +4,6 @@
 #include <stdint.h>
 #include "hardware/spi.h"
 
-#define SPI_RX_PIN  4
-#define SPI_SCK_PIN 6
-#define SPI_TX_PIN  7
 #define SPI_CSN_PIN 26
 
 class SPI
@@ -17,7 +14,7 @@ private:
     spi_inst_t *spi;
 
 public:
-    SPI(spi_inst_t *spi_);
+    SPI(spi_inst_t *spi_, uint baudrate, uint rx_pin, uint sck_pin, uint tx_pin);
     ~SPI();
     void write_register(uint8_t reg, uint8_t data);
     void read_registers(uint8_t reg, uint8_t *buf, uint16_t len);

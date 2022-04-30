@@ -15,13 +15,12 @@ static inline void cs_deselect()
     asm volatile("nop \n nop \n nop");
 }
 
-SPI::SPI(spi_inst_t *spi_) : spi(spi_)
+SPI::SPI(spi_inst_t *spi_, uint baudrate, uint rx_pin, uint sck_pin, uint tx_pin) : spi(spi_)
 {
-    // This example will use SPI0 at 0.5MHz.
-    spi_init(spi, 500 * 1000);
-    gpio_set_function(SPI_RX_PIN, GPIO_FUNC_SPI);
-    gpio_set_function(SPI_SCK_PIN, GPIO_FUNC_SPI);
-    gpio_set_function(SPI_TX_PIN, GPIO_FUNC_SPI);
+    spi_init(spi, baudrate);
+    gpio_set_function(rx_pin, GPIO_FUNC_SPI);
+    gpio_set_function(sck_pin, GPIO_FUNC_SPI);
+    gpio_set_function(tx_pin, GPIO_FUNC_SPI);
     // Make the SPI pins available to picotool
     //bi_decl(bi_3pins_with_func(PICO_DEFAULT_SPI_RX_PIN, PICO_DEFAULT_SPI_TX_PIN, PICO_DEFAULT_SPI_SCK_PIN, GPIO_FUNC_SPI));
 
