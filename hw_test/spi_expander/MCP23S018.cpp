@@ -18,10 +18,10 @@ uint8_t MCP23S018::read()
 
 void MCP23S018::write(uint8_t value)
 {
-
+    spi.write_register(static_cast<uint8_t>(REG::OLAT), value);
 }
 
 void MCP23S018::setDirection(uint8_t direction)
 {
-
+    spi.write_register(static_cast<uint8_t>(REG::IODIR), direction);
 }
