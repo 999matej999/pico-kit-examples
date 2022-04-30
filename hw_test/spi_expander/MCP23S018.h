@@ -7,7 +7,7 @@ class MCP23S018
 {
 
 public:
-    enum Reg : uint8_t
+    enum class REG : uint8_t
     {
         IODIR       = 0x00,
         IPOL        = 0x01,
