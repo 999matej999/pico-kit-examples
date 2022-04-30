@@ -8,6 +8,10 @@
 #define SPI_SCK_PIN 6
 #define SPI_TX_PIN  7
 
+#define EXPANDER_CS_PIN 26
+
+#define MCP23S018_DEVICE_OPCODE 0b01000000
+
 int main()
 {
     stdio_init_all();
@@ -16,7 +20,7 @@ int main()
     // This example will use SPI0 at 0.5MHz.
     SPI spi(spi0, 500 * 1000, SPI_RX_PIN, SPI_SCK_PIN, SPI_TX_PIN);
 
-    MCP23S018 expander(spi);
+    MCP23S018 expander(spi, EXPANDER_CS_PIN, MCP23S018_DEVICE_OPCODE);
 
     expander.setDirection(0xF0);
 

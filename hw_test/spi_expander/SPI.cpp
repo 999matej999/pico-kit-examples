@@ -1,17 +1,17 @@
 #include "SPI.h"
 #include "hardware/gpio.h"
 
-static inline void cs_select()
+static inline void cs_select(uint cs_pin)
 {
     asm volatile("nop \n nop \n nop");
-    gpio_put(SPI_CSN_PIN, 0);  // Active low
+    gpio_put(cs_pin, 0);  // Active low
     asm volatile("nop \n nop \n nop");
 }
 
-static inline void cs_deselect()
+static inline void cs_deselect(uint cs_pin)
 {
     asm volatile("nop \n nop \n nop");
-    gpio_put(SPI_CSN_PIN, 1);
+    gpio_put(cs_pin, 1);
     asm volatile("nop \n nop \n nop");
 }
 
@@ -23,13 +23,6 @@ SPI::SPI(spi_inst_t *spi_, uint baudrate, uint rx_pin, uint sck_pin, uint tx_pin
     gpio_set_function(tx_pin, GPIO_FUNC_SPI);
     // Make the SPI pins available to picotool
     //bi_decl(bi_3pins_with_func(PICO_DEFAULT_SPI_RX_PIN, PICO_DEFAULT_SPI_TX_PIN, PICO_DEFAULT_SPI_SCK_PIN, GPIO_FUNC_SPI));
-
-    // Chip select is active-low, so we'll initialise it to a driven-high state
-    gpio_init(SPI_CSN_PIN);
-    gpio_set_dir(SPI_CSN_PIN, GPIO_OUT);
-    gpio_put(SPI_CSN_PIN, 1);
-    // Make the CS pin available to picotool
-    //bi_decl(bi_1pin_with_name(PICO_DEFAULT_SPI_CSN_PIN, "SPI CS"));
 }
 
 SPI::~SPI()
@@ -37,19 +30,19 @@ SPI::~SPI()
     spi_deinit(spi);
 }
 
-void SPI::write_register(uint8_t reg, uint8_t data)
+void SPI::write_register(uint cs_pin, uint8_t reg, uint8_t data)
 {
     uint8_t msg[3] = {};
     msg[0] = deviceOpcode;
     msg[1] = reg;
     msg[2] = data;
-    cs_select();
+    cs_select(cs_pin);
     spi_write_blocking(spi, msg, 3);
-    cs_deselect();
+    cs_deselect(cs_pin);
     sleep_ms(10);
 }
 
-void SPI::read_registers(uint8_t reg, uint8_t *buf, uint16_t len)
+void SPI::read_registers(uint cs_pin, uint8_t reg, uint8_t *buf, uint16_t len)
 {
     // For this particular device, we send the device the register we want to read
     // first, then subsequently read from the device. The register is auto incrementing
@@ -58,10 +51,10 @@ void SPI::read_registers(uint8_t reg, uint8_t *buf, uint16_t len)
     uint8_t msg[2] = {};
     msg[0] = deviceOpcode | 1u;
     msg[1] = reg;
-    cs_select();
+    cs_select(cs_pin);
     spi_write_blocking(spi, msg, 2);
     sleep_ms(10);
     spi_read_blocking(spi, 0, buf, len);
-    cs_deselect();
+    cs_deselect(cs_pin);
     sleep_ms(10);
 }

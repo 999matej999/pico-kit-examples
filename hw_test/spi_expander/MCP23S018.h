@@ -24,9 +24,11 @@ private:
     };
 
     SPI &spi;
+    const uint cs_pin;
+    const uint8_t deviceOpcode;
 
 public:
-    MCP23S018(SPI &spi_);
+    MCP23S018(SPI &spi_, uint cs_pin_, uint8_t deviceOpcode_);
     ~MCP23S018();
 
     uint8_t read();
