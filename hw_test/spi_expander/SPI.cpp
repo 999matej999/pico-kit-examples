@@ -1,19 +1,4 @@
 #include "SPI.h"
-#include "hardware/gpio.h"
-
-static inline void cs_select(uint cs_pin)
-{
-    asm volatile("nop \n nop \n nop");
-    gpio_put(cs_pin, 0);  // Active low
-    asm volatile("nop \n nop \n nop");
-}
-
-static inline void cs_deselect(uint cs_pin)
-{
-    asm volatile("nop \n nop \n nop");
-    gpio_put(cs_pin, 1);
-    asm volatile("nop \n nop \n nop");
-}
 
 SPI::SPI(spi_inst_t *spi_, uint baudrate, uint rx_pin, uint sck_pin, uint tx_pin) : spi(spi_)
 {
