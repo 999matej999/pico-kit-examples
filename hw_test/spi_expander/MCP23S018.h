@@ -33,6 +33,7 @@ public:
     uint8_t read();
     void write(uint8_t value);
     void setDirection(uint8_t direction);
+    void setPullup(uint8_t pullup);
 
 };
 
