@@ -30,31 +30,23 @@ SPI::~SPI()
     spi_deinit(spi);
 }
 
-void SPI::write_register(uint cs_pin, uint8_t reg, uint8_t data)
+void SPI::write_register(uint cs_pin, const uint8_t* send_buf, size_t send_len)
 {
-    uint8_t msg[3] = {};
-    msg[0] = deviceOpcode;
-    msg[1] = reg;
-    msg[2] = data;
     cs_select(cs_pin);
-    spi_write_blocking(spi, msg, 3);
+    spi_write_blocking(spi, send_buf, send_len);
     cs_deselect(cs_pin);
     sleep_ms(10);
 }
 
-void SPI::read_registers(uint cs_pin, uint8_t reg, uint8_t *buf, uint16_t len)
+void SPI::read_registers(uint cs_pin, const uint8_t* send_buf, size_t send_len, uint8_t *recv_buf, size_t recv_len)
 {
     // For this particular device, we send the device the register we want to read
     // first, then subsequently read from the device. The register is auto incrementing
     // so we don't need to keep sending the register we want, just the first.
-
-    uint8_t msg[2] = {};
-    msg[0] = deviceOpcode | 1u;
-    msg[1] = reg;
     cs_select(cs_pin);
-    spi_write_blocking(spi, msg, 2);
+    spi_write_blocking(spi, send_buf, send_len);
     sleep_ms(10);
-    spi_read_blocking(spi, 0, buf, len);
+    spi_read_blocking(spi, 0, recv_buf, recv_len);
     cs_deselect(cs_pin);
     sleep_ms(10);
 }
