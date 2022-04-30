@@ -1,6 +1,5 @@
 #include "SPI.h"
 #include "hardware/gpio.h"
-#include "hardware/spi.h"
 
 static inline void cs_select()
 {
@@ -16,10 +15,10 @@ static inline void cs_deselect()
     asm volatile("nop \n nop \n nop");
 }
 
-SPI::SPI(/* args */)
+SPI::SPI(spi_inst_t *spi_) : spi(spi_)
 {
     // This example will use SPI0 at 0.5MHz.
-    spi_init(spi0, 500 * 1000);
+    spi_init(spi, 500 * 1000);
     gpio_set_function(SPI_RX_PIN, GPIO_FUNC_SPI);
     gpio_set_function(SPI_SCK_PIN, GPIO_FUNC_SPI);
     gpio_set_function(SPI_TX_PIN, GPIO_FUNC_SPI);
@@ -36,7 +35,7 @@ SPI::SPI(/* args */)
 
 SPI::~SPI()
 {
-    spi_deinit(spi0);
+    spi_deinit(spi);
 }
 
 void SPI::write_register(uint8_t reg, uint8_t data)
@@ -46,7 +45,7 @@ void SPI::write_register(uint8_t reg, uint8_t data)
     msg[1] = reg;
     msg[2] = data;
     cs_select();
-    spi_write_blocking(spi0, msg, 3);
+    spi_write_blocking(spi, msg, 3);
     cs_deselect();
     sleep_ms(10);
 }
@@ -61,9 +60,9 @@ void SPI::read_registers(uint8_t reg, uint8_t *buf, uint16_t len)
     msg[0] = deviceOpcode | 1u;
     msg[1] = reg;
     cs_select();
-    spi_write_blocking(spi0, msg, 2);
+    spi_write_blocking(spi, msg, 2);
     sleep_ms(10);
-    spi_read_blocking(spi0, 0, buf, len);
+    spi_read_blocking(spi, 0, buf, len);
     cs_deselect();
     sleep_ms(10);
 }

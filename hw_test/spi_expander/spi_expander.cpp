@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "hardware/spi.h"
 #include "SPI.h"
 #include "MCP23S018.h"
 
@@ -8,7 +9,7 @@ int main()
     stdio_init_all();
     printf("SPI expander example\n");
 
-    SPI spi;
+    SPI spi(spi0);
 
     MCP23S018 expander(spi);
 
