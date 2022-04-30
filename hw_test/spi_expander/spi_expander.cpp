@@ -24,18 +24,19 @@ static inline void cs_deselect()
     asm volatile("nop \n nop \n nop");
 }
 
+const uint8_t deviceOpcode = 0b01000000;
+
 static void write_register(uint8_t reg, uint8_t data)
 {
-    uint8_t buf[2];
-    buf[0] = reg & 0x7f;  // remove read bit as this is a write
-    buf[1] = data;
+    uint8_t msg[3] = {};
+    msg[0] = deviceOpcode;
+    msg[1] = reg;
+    msg[2] = data;
     cs_select();
-    spi_write_blocking(spi0, buf, 2);
+    spi_write_blocking(spi0, msg, 3);
     cs_deselect();
     sleep_ms(10);
 }
-
-const uint8_t deviceOpcode = 0b01000000;
 
 static void read_registers(uint8_t reg, uint8_t *buf, uint16_t len)
 {
@@ -79,6 +80,8 @@ int main()
     {
         uint8_t buffer = 0;
         read_registers(GPIO, &buffer, 1);
+        write_register(IODIR, 0xF0);
+        write_register(OLAT, (buffer & 0xF0) >> 4);
 
         for (size_t i = 0; i < 8; ++i)
         {
