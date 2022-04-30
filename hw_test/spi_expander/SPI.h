@@ -13,8 +13,8 @@ private:
 public:
     SPI(spi_inst_t *spi_, uint baudrate, uint rx_pin, uint sck_pin, uint tx_pin);
     ~SPI();
-    void write_register(uint cs_pin, const uint8_t* send_buf, size_t send_len);
-    void read_registers(uint cs_pin, const uint8_t* send_buf, size_t send_len, uint8_t *recv_buf, size_t recv_len);
+    void write(uint cs_pin, const uint8_t* send_buf, size_t send_len);
+    void read(uint cs_pin, const uint8_t* send_buf, size_t send_len, uint8_t *recv_buf, size_t recv_len);
 
 };
 
