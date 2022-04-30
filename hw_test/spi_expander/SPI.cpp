@@ -36,6 +36,7 @@ SPI::SPI(/* args */)
 
 SPI::~SPI()
 {
+    spi_deinit(spi0);
 }
 
 void SPI::write_register(uint8_t reg, uint8_t data)

@@ -2,6 +2,7 @@
 #define __MCP23S018_H__
 
 #include <stdint.h>
+#include "SPI.h"
 
 class MCP23S018
 {
@@ -23,10 +24,15 @@ public:
     };
 
 private:
-    /* data */
+    SPI &spi;
+
 public:
-    MCP23S018(/* args */);
+    MCP23S018(SPI &spi_);
     ~MCP23S018();
+
+    uint8_t read();
+    void write(uint8_t value);
+    void setDirection(uint8_t direction);
 
 };
 
