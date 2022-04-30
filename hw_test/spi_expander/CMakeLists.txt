@@ -1,5 +1,7 @@
 add_executable(spi_expander
     spi_expander.cpp
+    SPI.cpp
+    SPI.h
     MCP23S018.cpp
     MCP23S018.h
 )
