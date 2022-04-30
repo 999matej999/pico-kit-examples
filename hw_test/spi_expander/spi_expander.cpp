@@ -79,9 +79,9 @@ int main()
     while(true)
     {
         uint8_t buffer = 0;
-        read_registers(GPIO, &buffer, 1);
-        write_register(IODIR, 0xF0);
-        write_register(OLAT, (buffer & 0xF0) >> 4);
+        read_registers(MCP23S018::GPIO, &buffer, 1);
+        write_register(MCP23S018::IODIR, 0xF0);
+        write_register(MCP23S018::OLAT, (buffer & 0xF0) >> 4);
 
         for (size_t i = 0; i < 8; ++i)
         {
