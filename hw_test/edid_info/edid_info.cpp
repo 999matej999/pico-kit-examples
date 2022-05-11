@@ -125,6 +125,61 @@ void decode_edid_info(uint8_t *buffer, size_t len)
     float wy = float((buffer[34] << 2) | ((buffer[26]>>0) & 3)) / 1024;
 
     printf("Chromaticity coordinates:  r: (%.3f, %.3f), g: (%.3f, %.3f), b: (%.3f, %.3f), w: (%.3f, %.3f)\n", rx, ry, gx, gy, bx, by, wx, wy);
+
+        const char *timings[] = {
+        "720x400 @ 70 Hz (VGA)",
+        "720x400 @ 88 Hz (XGA)",
+        "640x480 @ 60 Hz (VGA)",
+        "640x480 @ 67 Hz (Apple Macintosh II)",
+        "640x480 @ 72 Hz",
+        "640x480 @ 75 Hz",
+        "800x600 @ 56 Hz",
+        "800x600 @ 60 Hz",
+        "800x600 @ 72 Hz",
+        "800x600 @ 75 Hz",
+        "832x624 @ 75 Hz (Apple Macintosh II)",
+        "1024x768 @ 87 Hz, interlaced (1024x768i)",
+        "1024x768 @ 60 Hz",
+        "1024x768 @ 72 Hz",
+        "1024x768 @ 75 Hz",
+        "1280x1024 @ 75 Hz",
+        "1152x870 @ 75 Hz (Apple Macintosh II)",
+        "manufacturer-specific 6",
+        "manufacturer-specific 5",
+        "manufacturer-specific 4",
+        "manufacturer-specific 3",
+        "manufacturer-specific 2",
+        "manufacturer-specific 1",
+        "manufacturer-specific 0"
+    };
+
+    uint8_t timingWord = (buffer[35] << 16) | (buffer[36] << 8) | buffer[37];
+    printf("Established timings:\n");
+    for (int i = 0; i < 24; ++i)
+    {
+        if (timingWord & (1 << (23-i)))
+        {
+            printf("  %s\n", timings[i]);
+        }
+    }
+
+    uint8_t aspect_values[4][2] = {{16, 10}, {4, 3}, {5, 4}, {16, 9}};
+
+    printf("Standard timing information:\n");
+    for (int i = 38; i < 54; i += 2)
+    {
+        if ((buffer[i] != 1) || (buffer[i+1] != 1))
+        {
+            uint8_t xres = (buffer[i]+31)*8;
+            uint8_t aspect[2] = {};
+            aspect[0] = aspect_values[buffer[i+1] >> 6][0];
+            aspect[1] = aspect_values[buffer[i+1] >> 6][1];
+            //uint8_t aspect = [(16, 10), (4, 3), (5, 4), (16, 9)][];
+            uint8_t yres = xres * aspect[1] / aspect[0];
+            uint8_t vfreq = (buffer[i+1] & 63) + 60;
+            printf("  X res: %d, aspect %d:%d, Y res (derived): %d), vertical frequency: %d\n", xres, aspect[0], aspect[1], yres, vfreq);
+        }
+    }
 }
 
 
