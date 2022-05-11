@@ -1,5 +1,5 @@
 add_executable(edid_info
-        edid_info.c
+        edid_info.cpp
 )
 
 target_link_libraries(edid_info pico_stdlib hardware_i2c)

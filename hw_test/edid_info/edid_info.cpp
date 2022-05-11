@@ -105,8 +105,12 @@ void decode_edid_info(uint8_t *buffer, size_t len)
     if (buffer[24] & 128) printf("  DPMS standby supported\n");
     if (buffer[24] & 64) printf("  DPMS suspend supported\n");
     if (buffer[24] & 32) printf("  DPMS active-off supported\n");
-    if (buffer[20] & 128) printf("  Display type (digital): %s\n", display_type_digital(buffer[24]>>3)&3]);
-    else printf("  Display type (analog): %s\n", display_type_analog(buffer[24]>>3)&3]);
+
+    if (buffer[20] & 128)
+        printf("  Display type (digital): %s\n", display_type_digital[(buffer[24]>>3)&3]);
+    else
+        printf("  Display type (analog): %s\n", display_type_analog[(buffer[24]>>3)&3]);
+
     if (buffer[24] & 4) printf("  Standard sRGB color space (data not printed)\n");
     if (buffer[24] & 2) printf("  Preferred timing mode in descriptor block 1\n");
     if (buffer[24] & 1) printf("  Continuous timings with GTF or CVT\n");
@@ -120,7 +124,7 @@ void decode_edid_info(uint8_t *buffer, size_t len)
     float wx = float((buffer[33] << 2) | ((buffer[26]>>2) & 3)) / 1024;
     float wy = float((buffer[34] << 2) | ((buffer[26]>>0) & 3)) / 1024;
 
-    printf("Chromaticity coordinates:  r: (%.3f, %.3f), g: (%.3f, %.3f), b: (%.3f, %.3f), w: (%.3f, %.3f)\n", (rx, ry, gx, gy, bx, by, wx, wy));
+    printf("Chromaticity coordinates:  r: (%.3f, %.3f), g: (%.3f, %.3f), b: (%.3f, %.3f), w: (%.3f, %.3f)\n", rx, ry, gx, gy, bx, by, wx, wy);
 }
 
 
