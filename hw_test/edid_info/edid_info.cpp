@@ -180,6 +180,24 @@ void decode_edid_info(uint8_t *buffer, size_t len)
             printf("  X res: %d, aspect %d:%d, Y res (derived): %d), vertical frequency: %d\n", xres, aspect[0], aspect[1], yres, vfreq);
         }
     }
+
+    for (int j = 1; j < 5; ++j)
+    {
+        uint8_t i = j * 18 + 36;
+        /*if (buffer[i] != 0 or buffer[i+1] != 0)
+            detailedTimingDescriptor(j, buffer[i:i+18]);
+        else
+            otherMonitorDescriptors(j, buffer[i:i+18]);*/
+    }
+    if (buffer[126] > 0)
+        printf("%d extensions (not displayed)\n", buffer[126]);
+
+    uint16_t sum = 0;
+
+    for (size_t i = 0; i < len; ++i) sum += buffer[i];
+
+    if (sum % 256 != 0)
+        printf("Bad checksum\n");
 }
 
 
