@@ -22,6 +22,99 @@
 //i2c_write_blocking(i2c1, addr, &val, 1, true); // true to keep master control of bus
 //i2c_read_blocking(i2c1, addr, buffer, 6, false); // false - finished with bus
 
+void displayRangeLimits(uint8_t *buffer)
+{
+    printf("Display range limits\n");
+    if(buffer[0] != 0x00) return;
+    if(buffer[1] != 0x00) return;
+    if(buffer[2] != 0x00) return;
+    if(buffer[3] != 0xFD) return;
+    printf("  Minimum vertical field rate %dHz\n", (buffer[5] + ((buffer[4]&1) ? 256 : 0)));
+    printf("  Maximum vertical field rate %dHz\n", (buffer[6] + ((buffer[4]&2) ? 256 : 0)));
+    printf("  Minimum horizontal field rate %dHz\n", (buffer[7] + ((buffer[4]&4) ? 256 : 0)));
+    printf("  Maximum horizontal field rate %dHz\n", (buffer[8] + ((buffer[4]&8) ? 256 : 0)));
+    printf("  Maximum pixel clock rate: %dMhz\n", (buffer[9] * 10));
+    if (buffer[10] == 0)
+        printf("  Default GTF\n");
+    else if (buffer[10] == 1)
+        printf("  No timing information\n");
+    else if (buffer[10] == 2)
+        printf("  Secondary GTF (uninterpreted)\n");
+    else if (buffer[10] == 4)
+        printf("  CVT (uninterpreted)\n");
+    else
+        printf("  Unexpected timing information byte %x\n", buffer[10]);
+}
+
+const char *text(uint8_t *buffer) {return "s\0"; }
+// TODO: return re.sub('\n *', '', ''.join([chr(x) for x in buffer]))
+
+void otherMonitorDescriptors(uint8_t n, uint8_t *buffer)
+{
+    printf("Descriptor %d:\n", n);
+    if (buffer[3] == 0xFF) printf("Display serial number\n", text(&(buffer[5])));
+    else if (buffer[3] == 0xFE) printf("Unspecified text\n", text(&(buffer[5])));
+    else if (buffer[3] == 0xFD) displayRangeLimits(buffer);
+    else if (buffer[3] == 0xFC) printf("Display name\n", text(&(buffer[5])));
+    else if (buffer[3] == 0xFB) printf("Additional white point\n");
+    else if (buffer[3] == 0xFA) printf("Additional standard timing\n");
+    else if (buffer[3] == 0xF9) printf("Display color management\n");
+    else if (buffer[3] == 0xF8) printf("CVT timing codes\n");
+    else if (buffer[3] == 0xF7) printf("Additional standard timing\n");
+    else if (buffer[3] == 0x10) printf("Extended timing\n");
+    else printf("Unknown descriptor %x %s\n", buffer[3], text(&(buffer[5])));
+}
+
+void detailedTimingDescriptor(uint8_t n, uint8_t *buffer)
+{
+    printf("Descriptor %d: Detailed timing descriptor:\n", n);
+    printf("  Pixel clock: %dkHz\n", ((buffer[0] | (buffer[1]<<8)) * 10));
+    printf("  Horizontal active pixels: %d\n", (buffer[2] | ((buffer[4]&0xF0) << 4)));
+    printf("  Horizontal blanking pixels: %d\n", (buffer[3] | ((buffer[4]&0x0F) << 8)));
+    printf("  Vertical active lines: %d\n", (buffer[5] | ((buffer[7]&0xF0) << 4)));
+    printf("  Vertical blanking lines: %d\n", (buffer[6] | ((buffer[7]&0x0F) << 8)));
+    printf("  Horizontal front porch pixels: %d\n", (buffer[8] | ((buffer[11]&0xC0) << 2)));
+    printf("  Horizontal sync pulse pixels: %d\n", (buffer[9] | ((buffer[11]&0x30) << 4)));
+    printf("  Vertical front porch lines: %d\n", ((buffer[10]>>4) | ((buffer[11]&0x0C) << 2)));
+    printf("  Vertical sync pulse lines: %d\n", ((buffer[10]&0xF) | ((buffer[11]&0x03) << 4)));
+    printf("  Horizontal image size: %dmm\n", (buffer[12] | ((buffer[14]&0xF0) << 4)));
+    printf("  Vertical image size: %dmm\n", (buffer[13] | ((buffer[14]&0x0F) << 8)));
+    printf("  Horizontal border pixels: %d\n", buffer[15]);
+    printf("  Vertical border lines: %d\n", buffer[16]);
+    if (buffer[17] & 0x80) printf("  Interlaced\n");
+    if (buffer[17] & 0x60) printf("  Stereo\n");
+    if ((buffer[17] & 0x10) == 0)
+    {
+        printf("  Analog\n");
+        if (buffer[17] & 4)
+            printf("  Bipolar analog composite\n");
+        else
+            printf("  Analog composite\n");
+        if (buffer[17] & 2) printf("  VSync serration\n");
+        if (buffer[17] & 1)
+            printf("  Sync on all 3 RGB lines\n");
+        else
+            printf("  Sync on green only\n");
+    }
+    else if ((buffer[17] & 0x18) == 0x10)
+    {
+        printf("  Digital composite on HSync\n");
+        if (buffer[17] & 4)
+            printf("  Positive vertical sync polarity\n");
+        else
+            printf("  Negative vertical sync polarity\n");
+    }
+    else
+    {
+        printf("  Digital separate sync\n");
+        if (buffer[17] & 4) printf("  VSync serration\n");
+        if (buffer[17] & 2)
+            printf("  Positive horizontal sync polarity\n");
+        else
+            printf("  Negative horizontal sync polarity\n");
+    }
+}
+
 void decode_edid_info(uint8_t *buffer, size_t len)
 {
     if(len != 128) return;
@@ -184,10 +277,11 @@ void decode_edid_info(uint8_t *buffer, size_t len)
     for (int j = 1; j < 5; ++j)
     {
         uint8_t i = j * 18 + 36;
-        /*if (buffer[i] != 0 or buffer[i+1] != 0)
-            detailedTimingDescriptor(j, buffer[i:i+18]);
+        //if ((buffer[i] != 0) or (buffer[i+1] != 0)) // wtf
+        if ((buffer[i] != 0) || (buffer[i+1] != 0))
+            detailedTimingDescriptor(j, &(buffer[i]));
         else
-            otherMonitorDescriptors(j, buffer[i:i+18]);*/
+            otherMonitorDescriptors(j, &(buffer[i]));
     }
     if (buffer[126] > 0)
         printf("%d extensions (not displayed)\n", buffer[126]);
