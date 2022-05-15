@@ -1,26 +1,15 @@
-/**
- * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/float.h"
 #include "hardware/gpio.h"
 #include "hardware/i2c.h"
 
+// original python code: https://gist.github.com/shirriff/dd9e35da12879cf1c5ed9ed92ff704ec
+
 #define I2C_SDA_PIN 2
 #define I2C_SCL_PIN 3
 
 #define ADDR 0x50
-
-// write
-//i2c_write_blocking(i2c1, addr, buf, 2, false);
-
-// read
-//i2c_write_blocking(i2c1, addr, &val, 1, true); // true to keep master control of bus
-//i2c_read_blocking(i2c1, addr, buffer, 6, false); // false - finished with bus
 
 void displayRangeLimits(uint8_t *buffer)
 {
