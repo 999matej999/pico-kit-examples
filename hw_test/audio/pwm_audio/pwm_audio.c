@@ -4,9 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#define PICO_AUDIO_PWM_L_PIN 8
-#define PICO_AUDIO_PWM_R_PIN 9
-
 #include <stdio.h>
 #include <math.h>
 
