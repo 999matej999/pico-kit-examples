@@ -1,9 +1,3 @@
-/**
- * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/float.h"
@@ -40,16 +34,13 @@ int main() {
         // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
         const float conversion_factor = 3.3f / (1 << 12);
         uint16_t result = adc_read();
-        /*printf("Counter: %u, ", counter & 0xf);
-        printf("BIN value: 0b");
+        float voltage = result * conversion_factor;
+
+        /*printf("BIN value: 0b");
         for(size_t i = 0; i < 12; ++i) printf((result & (1 << (12 - i - 1))) ? "1" : "0");
-        printf(", HEX value: 0x%03x, voltage: %f V\n", result, result * conversion_factor);*/
+        printf(", HEX value: 0x%03x, voltage: %f V\n", result, voltage);*/
 
-        uint8_t buttons = round(4.8562 * result * conversion_factor - 0.0456);
-
-        /*printf("pressed buttons: ");
-        for(size_t i = 0; i < 4; ++i) printf((buttons & (1 << (4 - i - 1))) ? "1" : "0");
-        printf("\n");*/
+        uint8_t buttons = round(16*voltage/3.3f);
 
         gpio_put(LED1, buttons & 0b1000);
         gpio_put(LED2, buttons & 0b0100);
