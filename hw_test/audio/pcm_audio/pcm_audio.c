@@ -24,8 +24,8 @@ CU_REGISTER_DEBUG_PINS(audio_timing)
 // todo make descriptor strings should probably belong to the configs
 static char *descriptor_strings[] =
         {
-                "Raspberry Pi",
-                "Pico Examples Sound Card",
+                "VUT FEKT UAMT",
+                "RPi Pico Kit Sound Card",
                 "0123456789AB"
         };
 
