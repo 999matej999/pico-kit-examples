@@ -1,0 +1,4 @@
+add_subdirectory(leds)
+add_subdirectory(quadrature_encoder)
+add_subdirectory(potentiometer)
+add_subdirectory(dac_buttons)
