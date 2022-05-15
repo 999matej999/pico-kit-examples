@@ -7,7 +7,8 @@
 #define LED3 8
 #define LED4 9
 
-int main() {
+int main()
+{
     gpio_init(LED1);
     gpio_init(LED2);
     gpio_init(LED3);
@@ -20,7 +21,8 @@ int main() {
 
     uint8_t counter = 0;
 
-    while (1) {
+    while (1)
+    {
         gpio_put(LED1, counter & 0b1000);
         gpio_put(LED2, counter & 0b0100);
         gpio_put(LED3, counter & 0b0010);

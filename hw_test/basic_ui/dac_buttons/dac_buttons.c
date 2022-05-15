@@ -9,7 +9,8 @@
 #define LED3 8
 #define LED4 9
 
-int main() {
+int main()
+{
     stdio_init_all();
     printf("ADC Example, measuring GPIO28\n");
 
@@ -30,7 +31,8 @@ int main() {
     gpio_set_dir(LED3, GPIO_OUT);
     gpio_set_dir(LED4, GPIO_OUT);
 
-    while (1) {
+    while (1)
+    {
         // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
         const float conversion_factor = 3.3f / (1 << 12);
         uint16_t result = adc_read();
