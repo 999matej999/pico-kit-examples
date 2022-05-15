@@ -39,7 +39,7 @@ struct audio_buffer_pool *init_audio()
     bool __unused ok;
     const struct audio_format *output_format;
 
-    output_format = audio_pwm_setup(&audio_format, -1, &default_mono_channel_config);
+    output_format = audio_pwm_setup(&audio_format, -1, &default_left_channel_config); // for right channel change to default_right_channel_config
     if (!output_format)
     {
         panic("PicoAudio: Unable to open audio device.\n");
