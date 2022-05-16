@@ -127,7 +127,7 @@ void decode_edid_info(uint8_t *buffer, size_t len)
     printf("  Product code: %d\n", buffer[10] | (buffer[11] << 8));
     printf("  Serial number: %d\n", buffer[12] | (buffer[13] << 8) | (buffer[14] << 16) | (buffer[15] << 24));
     printf("  Week: %d\n", buffer[16]);
-    printf("  Year: %d\n", buffer[16]+1990);
+    printf("  Year: %d\n", buffer[17]+1990);
     printf("  Edid version %d, revision %d\n", buffer[18], buffer[19]);
 
     const char *depth[] = {"undef", "6", "8", "10", "12", "14", "16", "res"};
