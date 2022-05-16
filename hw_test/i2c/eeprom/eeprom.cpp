@@ -34,7 +34,7 @@ int main()
 
     eeprom.write(0, 0, send_buf, 10);
 
-    sleep_ms(500);
+    sleep_ms(200);
 
     eeprom.read(0, 0, recv_buf, 10);
 
