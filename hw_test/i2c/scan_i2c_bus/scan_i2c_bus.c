@@ -39,12 +39,10 @@ int main()
     // Enable UART so we can print status output
     stdio_init_all();
     
-    // This example will use I2C0 on the default SDA and SCL pins (GP4, GP5 on a Pico)
+    // This example will use I2C1 on the SDA and SCL pins
     i2c_init(i2c1, 100 * 1000);
     gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA_PIN);
-    gpio_pull_up(I2C_SCL_PIN);
 
     printf("\nI2C Bus Scan\n");
     printf("   0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\n");
