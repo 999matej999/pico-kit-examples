@@ -1,5 +1,6 @@
 add_subdirectory(pico_blink)
 add_subdirectory(basic_ui)
+add_subdirectory(uart)
 add_subdirectory(spi)
 add_subdirectory(i2c)
 add_subdirectory(audio)
