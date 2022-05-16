@@ -2,7 +2,7 @@
 
 #define PAGE_SIZE 32
 
-AT24Cxx::AT24Cxx(uint8_t addr_): addr(addr_)
+AT24Cxx::AT24Cxx(i2c_inst_t *i2c_, uint8_t addr_): i2c(i2c_), addr(addr_)
 {
 }
 
@@ -21,7 +21,7 @@ void AT24Cxx::write(uint8_t page, uint8_t offset, uint8_t *data, size_t size)
 
     for(size_t i = 0; i < size; ++i) val[2 + i] = data[i];
 
-    i2c_write_blocking(i2c1, this->addr, val, 2 + size, false); // false - finished with bus
+    i2c_write_blocking(i2c, this->addr, val, 2 + size, false); // false - finished with bus
     
     delete[] val;
 }
@@ -34,6 +34,6 @@ void AT24Cxx::read(uint8_t page, uint8_t offset, uint8_t *data, size_t size)
     val[0] = (addr & 0xFF00) >> 8;
     val[1] = addr & 0x00FF;
 
-    i2c_write_blocking(i2c1, this->addr, val, 2, true); // true to keep master control of bus
-    i2c_read_blocking(i2c1, this->addr, data, size, false);  // False - finished with bus
+    i2c_write_blocking(i2c, this->addr, val, 2, true); // true to keep master control of bus
+    i2c_read_blocking(i2c, this->addr, data, size, false);  // False - finished with bus
 }

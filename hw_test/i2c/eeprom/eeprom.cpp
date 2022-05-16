@@ -10,7 +10,6 @@
 
 int main()
 {
-    // Enable UART so we can print status output
     stdio_init_all();
     
     // This example will use I2C1 on the SDA and SCL pins
@@ -18,7 +17,7 @@ int main()
     gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C);
 
-    AT24Cxx eeprom(AT24CXX_ADDR);
+    AT24Cxx eeprom(i2c1, AT24CXX_ADDR);
 
     printf("EEPROM EXAMPLE\n");
 
