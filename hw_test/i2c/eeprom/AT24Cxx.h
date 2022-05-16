@@ -1,8 +1,6 @@
 #ifndef __AT24CXX_H__
 #define __AT24CXX_H__
 
-#define AT24CXX_ADDR 0x51 // device address
-
 #include <stdint.h>
 #include <stdlib.h>
 #include "pico/stdlib.h"
