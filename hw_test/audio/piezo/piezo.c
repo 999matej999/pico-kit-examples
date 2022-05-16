@@ -4,11 +4,25 @@
 
 #define PIEZO 10
 
+#define SIREN_UP_DOWN // disable to change siren
+
+#ifdef SIREN_UP_DOWN
+
 #define START_FREQ 800u
 #define STOP_FREQ 1200u
 #define STEP_FREQ 2u
 
 #define ONE_TONE_TIME 8000ul
+
+#else
+
+#define START_FREQ 1600u
+#define STOP_FREQ 2200u
+#define STEP_FREQ 2u
+
+#define ONE_TONE_TIME 3000ul
+
+#endif
 
 int main()
 {
@@ -34,7 +48,11 @@ int main()
 
         frequency += step;
 
+        #ifdef SIREN_UP_DOWN
         if(frequency >= STOP_FREQ) step = -step;
         if(frequency <= START_FREQ) step = -step;
+        #else
+        if(frequency >= STOP_FREQ) frequency = START_FREQ;
+        #endif
     }
 }
