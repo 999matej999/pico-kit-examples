@@ -2,7 +2,15 @@
 
 #define PAGE_SIZE 32
 
-void AT24Cxx_write(uint8_t page, uint8_t offset, uint8_t *data, size_t size)
+AT24Cxx::AT24Cxx(uint8_t addr_): addr(addr_)
+{
+}
+
+AT24Cxx::~AT24Cxx()
+{
+}
+
+void AT24Cxx::write(uint8_t page, uint8_t offset, uint8_t *data, size_t size)
 {
     uint16_t addr = (page << 5) | offset;
 
@@ -24,7 +32,7 @@ void AT24Cxx_write(uint8_t page, uint8_t offset, uint8_t *data, size_t size)
     delete[] val;
 }
 
-void AT24Cxx_read(uint8_t page, uint8_t offset, uint8_t *data, size_t size)
+void AT24Cxx::read(uint8_t page, uint8_t offset, uint8_t *data, size_t size)
 {
     uint16_t addr = (page << 5) | offset;
     

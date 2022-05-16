@@ -6,6 +6,8 @@
 #define I2C_SDA_PIN 2
 #define I2C_SCL_PIN 3
 
+#define AT24CXX_ADDR 0x51 // device address
+
 int main()
 {
     // Enable UART so we can print status output
@@ -15,6 +17,8 @@ int main()
     i2c_init(i2c1, 10 * 1000);
     gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C);
+
+    AT24Cxx eeprom(AT24CXX_ADDR);
 
     printf("EEPROM EXAMPLE\n");
 
@@ -28,11 +32,11 @@ int main()
     }
     printf("\n");
 
-    AT24Cxx_write(0, 0, send_buf, 10);
+    eeprom.write(0, 0, send_buf, 10);
 
-    sleep_ms(200);
+    sleep_ms(500);
 
-    AT24Cxx_read(0, 0, recv_buf, 10);
+    eeprom.read(0, 0, recv_buf, 10);
 
     printf("Recv buffer:");
     for (size_t i = 0; i < 10; ++i)

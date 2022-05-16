@@ -8,7 +8,19 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 
-void AT24Cxx_write(uint8_t page, uint8_t offset, uint8_t *data, size_t size);
-void AT24Cxx_read(uint8_t page, uint8_t offset, uint8_t *data, size_t size);
+class AT24Cxx
+{
+
+private:
+    const uint8_t addr;
+
+public:
+    AT24Cxx(uint8_t addr_);
+    ~AT24Cxx();
+
+    void write(uint8_t page, uint8_t offset, uint8_t *data, size_t size);
+    void read(uint8_t page, uint8_t offset, uint8_t *data, size_t size);
+
+};
 
 #endif // __AT24CXX_H__ //
