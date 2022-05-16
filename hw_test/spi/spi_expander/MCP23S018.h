@@ -31,10 +31,10 @@ public:
     MCP23S018(SPI &spi_, uint cs_pin_, uint8_t deviceOpcode_);
     ~MCP23S018();
 
-    uint8_t read();
-    void write(uint8_t value);
     void setDirection(uint8_t direction);
     void setPullup(uint8_t pullup);
+    uint8_t read();
+    void write(uint8_t value);
 
 };
 

@@ -9,6 +9,9 @@
 #define LED3 8
 #define LED4 9
 
+#define DAC_BUTTONS 28        // input gpio for dac buttons
+#define DAC_BUTTONS_ADC_CH 2  // input channel of adc
+
 int main()
 {
     stdio_init_all();
@@ -17,9 +20,8 @@ int main()
     adc_init();
 
     // Make sure GPIO is high-impedance, no pullups etc
-    adc_gpio_init(28);
-    // Select ADC input 2 (GPIO28)
-    adc_select_input(2);
+    adc_gpio_init(DAC_BUTTONS);
+    adc_select_input(DAC_BUTTONS_ADC_CH);
 
     gpio_init(LED1);
     gpio_init(LED2);
@@ -34,7 +36,7 @@ int main()
     while (1)
     {
         // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
-        const float conversion_factor = 3.3f / (1 << 12);
+        const float conversion_factor = 3.3f / ((1 << 12) - 1);
         uint16_t result = adc_read();
         float voltage = result * conversion_factor;
 

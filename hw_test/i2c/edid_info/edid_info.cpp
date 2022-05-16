@@ -284,7 +284,8 @@ void decode_edid_info(uint8_t *buffer, size_t len)
 }
 
 
-int main() {
+int main()
+{
     stdio_init_all();
 
     i2c_init(i2c1, 400000);

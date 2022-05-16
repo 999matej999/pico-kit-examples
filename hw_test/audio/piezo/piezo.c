@@ -10,7 +10,8 @@
 
 #define ONE_TONE_TIME 8000ul
 
-int main() {
+int main()
+{
     gpio_init(PIEZO);
 
     gpio_set_dir(PIEZO, GPIO_OUT);
@@ -19,7 +20,8 @@ int main() {
     int16_t step = STEP_FREQ;
     bool state = false;
 
-    while (1) {
+    while (1)
+    {
         uint64_t delay_time = 1000000ul / frequency;
 
         uint64_t start = time_us_64();
