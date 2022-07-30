@@ -15,7 +15,7 @@
                 "interface/picoprobe.cfg",
                 "target/rp2040.cfg"
             ],
-            "svdFile": "/Users/matejponcak/repos/dp/rpi_repositories/pico-sdk/src/rp2040/hardware_regs/rp2040.svd",
+            "svdFile": "/Users/matejponcak/Desktop/School/ing/predmety/DP/rpi_repositories/pico-sdk/src/rp2040/hardware_regs/rp2040.svd",
             //"svdFile": "${env:PICO_SDK_PATH}/src/rp2040/hardware_regs/rp2040.svd",
             "runToMain": true,
             // Work around for stopping at main on restart
@@ -23,7 +23,7 @@
                 "break main",
                 "continue"
             ],
-            "searchDir": ["/Users/matejponcak/repos/dp/rpi_repositories/openocd/tcl"]
+            "searchDir": ["/Users/matejponcak/Desktop/School/ing/predmety/DP/rpi_repositories/openocd/tcl"]
         }
     ]
 }
