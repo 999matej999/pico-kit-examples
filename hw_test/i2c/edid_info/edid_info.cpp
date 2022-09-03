@@ -340,6 +340,8 @@ int main()
         }
         printf("\n");
     }
+    
+    decode_edid_info(buffer, 128);
 
     while (1)
     {
